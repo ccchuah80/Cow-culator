@@ -208,6 +208,10 @@
     function addCard(val) {
         if (currentHand.length >= 5) return;
         
+        // Normal A Deck Logic
+        if (val === 'A' && deckCounts[val] >= 1) return;
+        if (val !== 'A' && deckCounts[val] >= 3) return;
+
         // Single Deck Logic
         if (val === '♠️A' && deckCounts[val] >= 1) return;
         if (val !== '♠️A' && deckCounts[val] >= 4) return;
@@ -289,7 +293,7 @@
     function evaluatePair(pair) {
         let [c1, c2] = pair;
         if ((c1 === '♠️A' && FACES.includes(c2)) || (c2 === '♠️A' && FACES.includes(c1))) 
-            return { s: 1000, n: "NGAO TUNGKU 🍊", m: "x 4" };
+            return { s: 1000, n: "NGAO TUNGKU 🍄🍄‍🟫", m: "x4" };
 
         let r1 = (c1 === 'A' || c1 === '♠️A') ? 'A' : c1;
         let r2 = (c2 === 'A' || c2 === '♠️A') ? 'A' : c2;
@@ -304,7 +308,7 @@
             let p1 = getPoss(c1), p2 = getPoss(c2);
             for (let a of p1) for (let b of p2) if ((a + b) % 10 === 0) isHam = true;
         }
-        if (isHam) return { s: 600, n: "NGAO HAM 💰", m: "x 2" };
+        if (isHam) return { s: 600, n: "NGAO HAM 💰", m: "x2" };
 
         let maxPt = -1;
         let p1 = getPoss(c1), p2 = getPoss(c2);
@@ -318,7 +322,7 @@
         resDiv.style.display = "block";
 
         if (currentHand.every(c => FACES.includes(c))) {
-            ui("NGAO MO WONG 👑", "x 5", "Five Picture Cards", true);
+            ui("NGAO MO WONG 👑", "x5", "Five Picture Cards", true);
             return;
         }
 
