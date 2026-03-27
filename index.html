@@ -254,12 +254,24 @@
             box.innerHTML = '<span style="color:var(--cny-gold); opacity:0.5; line-height:85px;">請選擇五張牌</span>';
             return;
         }
-        box.innerHTML = currentHand.map((c, i) => 
-            `<div class="selected-card" onclick="removeCard(${i})">
-                <span style="font-size: 1.5em; opacity: 0.9;">${c === '♠️A' ? '♠️' : ''}</span>
-                ${c === '♠️A' ? 'A' : c}
-            </div>`
-        ).join('');
+        box.innerHTML = currentHand.map((c, i) => {
+    // Check if it's the Ace of Spades
+    const isAceSpades = c === '♠️A';
+
+    return `
+    <div class="selected-card" onclick="removeCard(${i})" 
+         style="display: inline-grid; place-items: center; position: relative; width: 50px; height: 70px;">
+        
+        <span style="grid-area: 1/1; font-size: 3em; opacity: 0.3;">
+            ${isAceSpades ? '♠️' : ''}
+        </span>
+
+        <span style="grid-area: 1/1; font-size: 1.5em; font-weight: bold; z-index: 1;">
+            ${isAceSpades ? 'A' : c}
+        </span>
+        
+    </div>`;
+}).join('');
     }
 
     // --- LOGIC ENGINE ---
