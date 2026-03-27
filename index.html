@@ -256,7 +256,7 @@
         }
         box.innerHTML = currentHand.map((c, i) => 
             `<div class="selected-card" onclick="removeCard(${i})">
-                <span style="font-size: 0.5em; opacity: 0.6;">${c === '♠️A' ? '♠️' : ''}</span>
+                <span style="font-size: 1.5em; opacity: 0.6;">${c === '♠️A' ? '♠️' : ''}</span>
                 ${c === '♠️A' ? 'A' : c}
             </div>`
         ).join('');
