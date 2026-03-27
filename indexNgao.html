@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CNY Ngao Master 🧧</title>
+    <style>
+        :root { 
+            --cny-red: #b30000; 
+            --cny-gold: #ffd700; 
+            --cny-amber: #ff8c00;
+            --paper-white: #fff5e6;
+        }
+        
+        body { 
+            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: radial-gradient(circle, #800000 0%, #4d0000 100%);
+            color: var(--cny-gold);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container { 
+            width: 95%;
+            max-width: 500px; 
+            background: linear-gradient(135deg, var(--cny-red) 0%, #800000 100%);
+            padding: 25px 15px;
+            border-radius: 20px; 
+            border: 3px solid var(--cny-gold);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+            text-align: center;
+            position: relative;
+        }
+
+        /* Festive Decorations */
+        .container::before, .container::after {
+            content: "🧧";
+            position: absolute;
+            font-size: 24px;
+            top: 10px;
+        }
+        .container::before { left: 15px; }
+        .container::after { right: 15px; }
+
+        h1 { 
+            font-size: 1.8em;
+            margin: 0 0 20px 0;
+            text-shadow: 2px 2px 0px #000;
+            letter-spacing: 2px;
+        }
+
+        /* Large Hand Display */
+        .hand-display { 
+            display: flex; 
+            justify-content: space-evenly; 
+            width: 100%;
+            min-height: 100px;
+            margin-bottom: 10px; 
+            padding: 15px 0;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            border: 2px solid var(--cny-amber);
+        }
+
+        .selected-card { 
+            background: var(--paper-white); 
+            color: #b30000; 
+            width: 60px; /* Enlarged */
+            height: 85px; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 8px; 
+            font-weight: 900; 
+            font-size: 1.5em; 
+            cursor: pointer; 
+            border: 2px solid var(--cny-gold);
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+            animation: bounceIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes bounceIn { from {transform: scale(0.5); opacity:0;} to {transform: scale(1); opacity:1;} }
+
+        .hint { font-size: 0.8em; color: var(--paper-white); margin-bottom: 25px; opacity: 0.8; }
+
+        /* Card Picker Grid */
+        .card-picker { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 8px; 
+            margin-bottom: 30px; 
+        }
+
+        .picker-btn { 
+            background: var(--paper-white); 
+            border: 2px solid var(--cny-gold);
+            color: #b30000; 
+            padding: 18px 0; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            font-size: 1.2em; 
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .picker-btn:disabled { 
+            background: #555 !important; 
+            color: #888 !important; 
+            border-color: #333 !important; 
+            cursor: not-allowed; 
+            opacity: 0.5;
+        }
+
+        .picker-btn:active { transform: translateY(2px); background: var(--cny-gold); }
+
+        .btn-spade { background: #e6f3ff; color: #004080; }
+
+        .controls { display: flex; gap: 12px; }
+        .calc-btn { 
+            flex: 2; 
+            background: linear-gradient(to bottom, #ffd700, #b8860b);
+            color: #500; 
+            border: none; 
+            padding: 18px; 
+            border-radius: 12px; 
+            font-weight: 900; 
+            font-size: 1.2em;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #8a6d1d;
+        }
+        .calc-btn:active { box-shadow: 0 0 0; transform: translateY(4px); }
+
+        .clear-btn { 
+            flex: 1; 
+            background: #222; 
+            color: #fff; 
+            border: 1px solid var(--cny-gold); 
+            border-radius: 12px; 
+            font-weight: bold; 
+            cursor: pointer; 
+        }
+
+        /* Result Section */
+        #res { 
+            margin-top: 25px; 
+            padding: 20px; 
+            border-radius: 15px; 
+            display: none; 
+            background: rgba(255,255,255,0.1);
+            border: 2px solid var(--cny-gold);
+        }
+        .mult-val { font-size: 3.8em; font-weight: 900; color: #fff; margin: 10px 0; text-shadow: 2px 2px 10px var(--cny-gold); }
+        .h-name { font-size: 1.8em; color: var(--cny-gold); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>NGAO 恭喜發財</h1>
+    
+    <div class="hand-display" id="handBox">
+        <span style="color:var(--cny-gold); opacity:0.5; line-height:85px;">請選擇五張牌</span>
+    </div>
+    <div class="hint">Tap a card in your hand to put it back</div>
+
+    <div class="card-picker" id="pickerGrid">
+        <button class="picker-btn" id="btn-2" onclick="addCard('2')">2</button>
+        <button class="picker-btn" id="btn-3" onclick="addCard('3')">3</button>
+        <button class="picker-btn" id="btn-4" onclick="addCard('4')">4</button>
+        <button class="picker-btn" id="btn-5" onclick="addCard('5')">5</button>
+        <button class="picker-btn" id="btn-6" onclick="addCard('6')">6</button>
+        <button class="picker-btn" id="btn-7" onclick="addCard('7')">7</button>
+        <button class="picker-btn" id="btn-8" onclick="addCard('8')">8</button>
+        <button class="picker-btn" id="btn-9" onclick="addCard('9')">9</button>
+        <button class="picker-btn" id="btn-10" onclick="addCard('10')">10</button>
+        <button class="picker-btn" id="btn-J" onclick="addCard('J')">J</button>
+        <button class="picker-btn" id="btn-Q" onclick="addCard('Q')">Q</button>
+        <button class="picker-btn" id="btn-K" onclick="addCard('K')">K</button>
+        <button class="picker-btn" id="btn-A" onclick="addCard('A')">A</button>
+        <button class="picker-btn btn-spade" id="btn-SPADE" onclick="addCard('♠️A')">♠️A</button>
+    </div>
+
+    <div class="controls">
+        <button class="clear-btn" onclick="clearHand()">CLEAR</button>
+        <button class="calc-btn" onclick="calculate()">HUAT AH! 🧧</button>
+    </div>
+
+    <div id="res">
+        <div id="hName" class="h-name"></div>
+        <div id="hMult" class="mult-val"></div>
+        <div id="hDetail" style="font-size: 0.9em; color: #fff; opacity:0.8;"></div>
+    </div>
+</div>
+
+<script>
+    let currentHand = [];
+    const deckCounts = {
+        '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0,
+        'J': 0, 'Q': 0, 'K': 0, 'A': 0, '♠️A': 0
+    };
+
+    function addCard(val) {
+        if (currentHand.length >= 5) return;
+        
+        // Single Deck Logic
+        if (val === '♠️A' && deckCounts[val] >= 1) return;
+        if (val !== '♠️A' && deckCounts[val] >= 4) return;
+
+        currentHand.push(val);
+        deckCounts[val]++;
+        updatePickerState();
+        renderHand();
+    }
+
+    function removeCard(idx) {
+        const val = currentHand[idx];
+        deckCounts[val]--;
+        currentHand.splice(idx, 1);
+        updatePickerState();
+        renderHand();
+        document.getElementById('res').style.display = "none";
+    }
+
+    function updatePickerState() {
+        for (const [card, count] of Object.entries(deckCounts)) {
+            const btnId = card === '♠️A' ? 'btn-SPADE' : `btn-${card}`;
+            const btn = document.getElementById(btnId);
+            if (!btn) continue;
+
+            if (card === '♠️A') {
+                btn.disabled = count >= 1;
+            } else {
+                btn.disabled = count >= 4;
+            }
+        }
+    }
+
+    function clearHand() {
+        currentHand = [];
+        for (let key in deckCounts) deckCounts[key] = 0;
+        updatePickerState();
+        renderHand();
+        document.getElementById('res').style.display = "none";
+    }
+
+    function renderHand() {
+        const box = document.getElementById('handBox');
+        if (currentHand.length === 0) {
+            box.innerHTML = '<span style="color:var(--cny-gold); opacity:0.5; line-height:85px;">請選擇五張牌</span>';
+            return;
+        }
+        box.innerHTML = currentHand.map((c, i) => 
+            `<div class="selected-card" onclick="removeCard(${i})">
+                <span style="font-size: 0.5em; opacity: 0.6;">${c === '♠️A' ? 'SPADE' : ''}</span>
+                ${c === '♠️A' ? 'A' : c}
+            </div>`
+        ).join('');
+    }
+
+    // --- LOGIC ENGINE ---
+    const FACES = ['J', 'Q', 'K'];
+    const getVal = (c) => (c === 'A' || c === '♠️A') ? 1 : (FACES.includes(c) || c === '10') ? 10 : parseInt(c);
+    const getPoss = (c) => (c === '3' || c === '6') ? [3, 6] : [getVal(c)];
+
+    function checkBase(cards) {
+        let v1 = getPoss(cards[0]), v2 = getPoss(cards[1]), v3 = getPoss(cards[2]);
+        for (let a of v1) for (let b of v2) for (let c of v3) if ((a+b+c)%10 === 0) return true;
+        return false;
+    }
+
+    function evaluatePair(pair) {
+        let [c1, c2] = pair;
+        if ((c1 === '♠️A' && FACES.includes(c2)) || (c2 === '♠️A' && FACES.includes(c1))) 
+            return { s: 1000, n: "NGAO TUNGKU 🍊", m: "x 4" };
+
+        let r1 = (c1 === 'A' || c1 === '♠️A') ? 'A' : c1;
+        let r2 = (c2 === 'A' || c2 === '♠️A') ? 'A' : c2;
+        if (r1 === r2) {
+            let score = getVal(r1); if (r1 === 'A') score = 14;
+            return { s: 800 + score, n: r1 === 'A' ? "PAIR ACE" : "PAIR " + r1, m: "x 3" };
+        }
+
+        let isHam = false;
+        if (FACES.includes(c1) && FACES.includes(c2)) isHam = true;
+        else {
+            let p1 = getPoss(c1), p2 = getPoss(c2);
+            for (let a of p1) for (let b of p2) if ((a + b) % 10 === 0) isHam = true;
+        }
+        if (isHam) return { s: 600, n: "NGAO HAM 💰", m: "x 2" };
+
+        let maxPt = -1;
+        let p1 = getPoss(c1), p2 = getPoss(c2);
+        for (let a of p1) for (let b of p2) { let p = (a+b)%10; if (p > maxPt) maxPt = p; }
+        return { s: maxPt, n: maxPt === 0 ? "NO POINT" : "NGAO " + maxPt, m: maxPt === 0 ? "x 0" : "x 1" };
+    }
+
+    function calculate() {
+        if (currentHand.length !== 5) return;
+        const resDiv = document.getElementById('res');
+        resDiv.style.display = "block";
+
+        if (currentHand.every(c => FACES.includes(c))) {
+            ui("NGAO MO WONG 👑", "x 5", "Five Picture Cards", true);
+            return;
+        }
+
+        let best = { s: -1, n: "NO NGAO", m: "BYE BYE", d: "Bet more next round" };
+        for (let i = 0; i < 5; i++) {
+            for (let j = i + 1; j < 5; j++) {
+                for (let k = j + 1; k < 5; k++) {
+                    let bIdx = [i, j, k];
+                    let rIdx = [0,1,2,3,4].filter(x => !bIdx.includes(x));
+                    let bC = bIdx.map(x => currentHand[x]);
+                    let rC = rIdx.map(x => currentHand[x]);
+                    if (checkBase(bC)) {
+                        let cur = evaluatePair(rC);
+                        if (cur.s > best.s) best = { s: cur.s, n: cur.n, m: cur.m, d: `Base: [${bC.join(' ')}] Pair: [${rC.join(' ')}]` };
+                    }
+                }
+            }
+        }
+        ui(best.n, best.m, best.d);
+    }
+
+    function ui(n, m, d) {
+        document.getElementById('hName').innerText = n;
+        document.getElementById('hMult').innerText = m;
+        document.getElementById('hDetail').innerText = d;
+    }
+</script>
+</body>
+</html>
