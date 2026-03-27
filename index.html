@@ -208,10 +208,6 @@
     function addCard(val) {
         if (currentHand.length >= 5) return;
         
-        // Normal A Deck Logic
-        if (val === 'A' && deckCounts[val] >= 1) return;
-        if (val !== 'A' && deckCounts[val] >= 3) return;
-
         // Single Deck Logic
         if (val === '♠️A' && deckCounts[val] >= 1) return;
         if (val !== '♠️A' && deckCounts[val] >= 4) return;
@@ -234,15 +230,19 @@
     function updatePickerState() {
         for (const [card, count] of Object.entries(deckCounts)) {
             const btnId = card === '♠️A' ? 'btn-SPADE' : `btn-${card}`;
+            const btnId = card === 'A' ? 'btn-A' : `btn-${card}`;
             const btn = document.getElementById(btnId);
             if (!btn) continue;
 
             if (card === '♠️A') {
                 btn.disabled = count >= 1;
-            } else {
-                btn.disabled = count >= 4;
-            }
-        }
+            } else 
+                if (card === 'A') {
+                btn.disabled = count >= 3;
+                } else {
+                    btn.disabled = count >= 4;
+                    }
+                }
     }
 
     function clearHand() {
