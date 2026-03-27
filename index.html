@@ -141,7 +141,8 @@
             color: #fff; 
             border: 1px solid var(--cny-gold); 
             border-radius: 12px; 
-            font-weight: bold; 
+            font-weight: 900; 
+            font-size: 1.2em;
             cursor: pointer; 
         }
 
@@ -161,10 +162,10 @@
 <body>
 
 <div class="container">
-    <h1>NGAO 恭喜發財</h1>
+    <h1>恭喜發財! Ngao</h1>
     
     <div class="hand-display" id="handBox">
-        <span style="color:var(--cny-gold); opacity:0.5; line-height:85px;">請選擇五張牌</span>
+        <span style="color:var(--cny-gold); opacity:0.5; line-height:85px;">请选择5️⃣张牌</span>
     </div>
     <div class="hint">Tap a card in your hand to put it back</div>
 
@@ -187,7 +188,7 @@
 
     <div class="controls">
         <button class="clear-btn" onclick="clearHand()">CLEAR</button>
-        <button class="calc-btn" onclick="calculate()">HUAT AH! 🧧</button>
+        <button class="calc-btn" onclick="calculate()">HUAT AH!🧧</button>
     </div>
 
     <div id="res">
@@ -251,7 +252,7 @@
     function renderHand() {
         const box = document.getElementById('handBox');
         if (currentHand.length === 0) {
-            box.innerHTML = '<span style="color:var(--cny-gold); opacity:0.5; line-height:85px;">請選擇五張牌</span>';
+            box.innerHTML = '<span style="color:var(--cny-gold); opacity:0.5; line-height:85px;">请选择5️⃣张牌</span>';
             return;
         }
         box.innerHTML = currentHand.map((c, i) => {
