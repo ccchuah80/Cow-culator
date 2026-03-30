@@ -13,7 +13,7 @@
         }
         
         body { 
-            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            font-family: "Typewriter", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
             background: radial-gradient(circle, #800000 0%, #4d0000 100%);
             color: var(--cny-gold);
             margin: 0;
@@ -27,6 +27,7 @@
         .container { 
             width: 95%;
             max-width: 500px; 
+            min-height : 720px;
             background: linear-gradient(135deg, var(--cny-red) 0%, #800000 100%);
             padding: 25px 15px;
             border-radius: 20px; 
@@ -49,7 +50,7 @@
         h1 { 
             font-size: 1.8em;
             margin: 0 0 20px 0;
-            text-shadow: 2px 2px 0px #000;
+            text-shadow: 2px 2px 0px #030;
             letter-spacing: 2px;
         }
 
@@ -59,7 +60,7 @@
             justify-content: space-evenly; 
             width: 100%;
             min-height: 100px;
-            margin-bottom: 10px; 
+            margin-bottom: 5px; 
             padding: 15px 0;
             background: rgba(0,0,0,0.2);
             border-radius: 15px;
@@ -68,17 +69,17 @@
 
         .selected-card { 
             background: var(--paper-white); 
-            color: #b30000; 
+            color: #b30000;
             width: 60px;
             height: 85px; 
             display: flex; 
             flex-direction: column;
-            align-items: center; 
-            justify-content: center; 
-            border-radius: 8px; 
-            font-weight: 900; 
-            font-size: 1.5em; 
-            cursor: pointer; 
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 1.5em;
+            cursor: pointer;
             border: 2px solid var(--cny-gold);
             box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
             animation: bounceIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -137,7 +138,7 @@
 
         .clear-btn { 
             flex: 1; 
-            background: #222; 
+            background: linear-gradient(to bottom, #ddffdd, #000000);
             color: #fff; 
             border: 1px solid var(--cny-gold); 
             border-radius: 12px; 
@@ -235,6 +236,9 @@
 
             if (card === '♠️A') {
                 btn.disabled = count >= 1;
+            } else 
+            	if (card === 'A') {
+                btn.disabled = count >= 3;
             } else {
                 btn.disabled = count >= 4;
             }
@@ -289,13 +293,13 @@
     function evaluatePair(pair) {
         let [c1, c2] = pair;
         if ((c1 === '♠️A' && FACES.includes(c2)) || (c2 === '♠️A' && FACES.includes(c1))) 
-            return { s: 1000, n: "NGAO TUNGKU 🍊", m: "x 4" };
+            return { s: 1000, n: "Ngao Tongku 🍄🍄‍🟫", m: "x4" };
 
         let r1 = (c1 === 'A' || c1 === '♠️A') ? 'A' : c1;
         let r2 = (c2 === 'A' || c2 === '♠️A') ? 'A' : c2;
         if (r1 === r2) {
             let score = getVal(r1); if (r1 === 'A') score = 14;
-            return { s: 800 + score, n: r1 === 'A' ? "PAIR ACE" : "PAIR " + r1, m: "x 3" };
+            return { s: 800 + score, n: r1 === 'A' ? "Pair Ace" : "Pair " + r1, m: "x3" };
         }
 
         let isHam = false;
@@ -304,12 +308,12 @@
             let p1 = getPoss(c1), p2 = getPoss(c2);
             for (let a of p1) for (let b of p2) if ((a + b) % 10 === 0) isHam = true;
         }
-        if (isHam) return { s: 600, n: "NGAO HAM 💰", m: "x 2" };
+        if (isHam) return { s: 600, n: "Ngao HAM 🔟💰", m: "x2" };
 
         let maxPt = -1;
         let p1 = getPoss(c1), p2 = getPoss(c2);
         for (let a of p1) for (let b of p2) { let p = (a+b)%10; if (p > maxPt) maxPt = p; }
-        return { s: maxPt, n: maxPt === 0 ? "NO POINT" : "NGAO " + maxPt, m: maxPt === 0 ? "x 0" : "x 1" };
+        return { s: maxPt, n: maxPt === 0 ? "No Ngao" : "Ngao " + maxPt, m: maxPt === 0 ? "x0" : "x1" };
     }
 
     function calculate() {
@@ -318,11 +322,11 @@
         resDiv.style.display = "block";
 
         if (currentHand.every(c => FACES.includes(c))) {
-            ui("NGAO MO WONG 👑", "x 5", "Five Picture Cards", true);
+            ui("Ngao Mo Wong 🐮👑", "x5", "Five Picture Cards", true);
             return;
         }
 
-        let best = { s: -1, n: "NO NGAO", m: "BYE BYE", d: "Bet more next round" };
+        let best = { s: -1, n: "No Ngao", m: " 🙊 🙉 🙈 ", d: "Bet more next round" };
         for (let i = 0; i < 5; i++) {
             for (let j = i + 1; j < 5; j++) {
                 for (let k = j + 1; k < 5; k++) {
